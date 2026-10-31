@@ -142,7 +142,8 @@
   .card:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(80,40,30,.05), 0 12px 28px rgba(80,40,30,.09); }
   .card.best { border-color: var(--peach); }
   .card .top { display: flex; gap: 14px; align-items: center; }
-  .avatar { width: 60px; height: 60px; border-radius: 50%; flex: none; display: grid; place-items: center; font-size: 28px; box-shadow: inset 0 0 0 3px rgba(255,255,255,.8); }
+  .avatar { width: 60px; height: 60px; border-radius: 50%; flex: none; display: grid; place-items: center; font-size: 28px; box-shadow: inset 0 0 0 3px rgba(255,255,255,.8); overflow: hidden; }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .who-t { flex: 1; min-width: 0; }
   .name { font-weight: 700; font-size: 18px; line-height: 1.3; }
   .meta { color: var(--sub); font-size: 12.5px; display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 2px; }
@@ -419,7 +420,7 @@
   </section>
 </main>
 
-<footer>表示している先生・生徒はすべて架空のデモデータです。申し込み内容はこのブラウザの中にだけ保存されます。</footer>
+<footer>表示している先生・生徒はすべて架空のデモデータです（先生の写真はAIで生成したイメージで、実在の人物ではありません）。申し込み内容はこのブラウザの中にだけ保存されます。</footer>
 
 <dialog id="dlg" aria-labelledby="dName">
   <form method="dialog" class="dlg">
@@ -480,6 +481,9 @@ let bookings = store.get("bookings", []);
 let TEACHERS = store.get("teachers", DEFAULT_TEACHERS);
 let me = store.get("me", 1);
 const isMine = (b) => !b.who || b.who === "あなた";
+// 先生の写真（AI生成のイメージ）。保存済みデータにも効くよう id から引く
+const photoOf = (t) => (t.id >= 1 && t.id <= 8 ? `img/teacher${t.id}.jpg` : "");
+const avatarInner = (t) => (photoOf(t) ? `<img src="${photoOf(t)}" alt="${esc(t.name)}の写真">` : t.emoji);
 
 // 講師画面が空にならないよう、ほかの生徒（架空）からの申し込みを最初に入れておく
 if (!store.get("seeded", false)) {
@@ -567,7 +571,7 @@ function cardHTML(t, best) {
   return `<article class="card ${best ? "best" : ""}">
     ${best ? `<span class="ribbon">いちばん相性が良い先生</span>` : ""}
     <div class="top">
-      <div class="avatar" style="background:${t.color}">${t.emoji}</div>
+      <div class="avatar" style="background:${t.color}">${avatarInner(t)}</div>
       <div class="who-t"><div class="name">${esc(t.name)}</div>
         <div class="meta"><span class="star">★ ${t.rating.toFixed(1)}</span><span>指導歴 ${t.years}年</span></div></div>
       ${sc !== null ? `<div class="ring" style="--p:${sc}" aria-label="相性${sc}%"><div><span><b>${sc}%</b><small>相性</small></span></div></div>` : ""}
@@ -637,7 +641,7 @@ function nextSlots(t) {
 function openBook(id) {
   current = TEACHERS.find((t) => t.id === id); slot = null;
   $("#dAvatar").style.background = current.color;
-  $("#dAvatar").textContent = current.emoji;
+  $("#dAvatar").innerHTML = avatarInner(current);
   $("#dName").textContent = `${current.name}の体験レッスン`;
   $("#dMeta").textContent = `${current.area} ・ ${current.style} ・ ${current.time}クラス`;
   $("#dFull").textContent = yen(current.price);
@@ -673,7 +677,7 @@ function renderMine() {
   $("#mine").innerHTML = own.length ? own.map((b) => {
     const t = TEACHERS.find((x) => x.id === b.tid);
     return `<div class="item">
-      <div class="avatar" style="background:${t.color}">${t.emoji}</div>
+      <div class="avatar" style="background:${t.color}">${avatarInner(t)}</div>
       <div class="grow"><div class="name">${esc(t.name)}</div>
         <div class="meta">${whenHTML(b)}<span>${t.area}</span></div>${noteHTML(b)}
         <button class="link" data-cancel="${b.id}">取り消す</button></div>
@@ -714,7 +718,7 @@ function renderReq() {
   updateBadge();
   const t = TEACHERS.find((x) => x.id === me);
   $("#meAvatar").style.background = t.color;
-  $("#meAvatar").textContent = t.emoji;
+  $("#meAvatar").innerHTML = avatarInner(t);
   $("#meName").textContent = t.name;
   const mine = bookings.filter((b) => b.tid === me);
   const pending = mine.filter((b) => b.status === "pending");
