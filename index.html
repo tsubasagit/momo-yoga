@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ももヨガ｜岡山のヨガ先生マッチング</title>
+<meta name="description" content="4つの質問で、岡山・倉敷で自分に合うヨガの先生が見つかる。体験レッスンの申し込みから講師の承認まで試せるデモアプリです。">
+<meta name="theme-color" content="#fff9f5">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='36' r='22' fill='%23f2998d'/><path d='M32 14c6-8 16-8 18-4-6 0-12 3-18 8z' fill='%235e9e74'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fff9f5;
+    --surface: #ffffff;
+    --ink: #3b2e2c;
+    --sub: #8b7672;
+    --faint: #b8a6a2;
+    --line: #f0e2dc;
+    --peach: #ee8a7e;
+    --peach-d: #d4645a;
+    --peach-l: #fdeeea;
+    --leaf: #5e9e74;
+    --leaf-d: #467e59;
+    --leaf-l: #eaf4ed;
+    --gold: #e2a93b;
+    --accent: var(--peach);
+    --accent-d: var(--peach-d);
+    --accent-l: var(--peach-l);
+    --shadow: 0 1px 2px rgba(80, 40, 30, .04), 0 6px 20px rgba(80, 40, 30, .06);
+    --radius: 20px;
+  }
+  body.teacher { --accent: var(--leaf); --accent-d: var(--leaf-d); --accent-l: var(--leaf-l); }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", sans-serif;
+    font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, .logo, .name, .stat b, .price b { font-family: "Zen Maru Gothic", "Noto Sans JP", sans-serif; }
+  button { font: inherit; color: inherit; }
+  button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 2px;
+  }
+  .hidden { display: none !important; }
+
+  /* ---------- ヘッダー ---------- */
+  header {
+    position: sticky; top: 0; z-index: 20;
+    background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar { max-width: 1040px; margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 21px; letter-spacing: .04em; white-space: nowrap; }
+  .logo svg { width: 30px; height: 30px; flex: none; }
+  .logo em { font-style: normal; color: var(--accent-d); }
+  .logo small { font-family: "Noto Sans JP", sans-serif; font-weight: 500; font-size: 11px; color: var(--sub); letter-spacing: 0; margin-left: 2px; }
+  nav.tabs { display: flex; gap: 4px; margin-left: auto; }
+  nav.tabs button {
+    display: flex; align-items: center; gap: 6px; border: 0; background: transparent; cursor: pointer;
+    padding: 8px 14px; border-radius: 999px; font-size: 14px; font-weight: 500; color: var(--sub); transition: background .15s, color .15s;
+  }
+  nav.tabs button:hover { color: var(--ink); background: var(--accent-l); }
+  nav.tabs button.on { background: var(--accent); color: #fff; font-weight: 700; }
+  nav.tabs svg { width: 18px; height: 18px; }
+  .badge { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--accent-d); color: #fff; font-size: 11px; font-weight: 700; line-height: 18px; text-align: center; }
+  nav.tabs button.on .badge { background: #fff; color: var(--accent-d); }
+  .badge:empty, .badge[data-n="0"] { display: none; }
+  .role { display: flex; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px; flex: none; }
+  .role button { border: 0; background: transparent; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; cursor: pointer; color: var(--sub); }
+  .role button.on { background: var(--ink); color: #fff; }
+
+  main { max-width: 1040px; margin: 0 auto; padding: 28px 20px 96px; }
+  .head { margin-bottom: 20px; }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .12em; color: var(--accent-d); margin-bottom: 4px; }
+  h2 { font-size: 26px; line-height: 1.35; margin: 0 0 6px; font-weight: 900; }
+  .lead { color: var(--sub); font-size: 14px; margin: 0; }
+  h3.sec { display: flex; align-items: center; gap: 8px; font-size: 16px; margin: 28px 0 12px; }
+  h3.sec .count { font-family: "Noto Sans JP", sans-serif; font-size: 12px; color: var(--sub); font-weight: 500; }
+
+  /* ---------- 診断 ---------- */
+  .hero {
+    position: relative; overflow: hidden; border-radius: 28px; padding: 36px 32px; margin-bottom: 24px;
+    background: linear-gradient(135deg, #ffe3dc 0%, #fff1e6 55%, #eef6ee 100%);
+  }
+  .hero h1 { font-size: 34px; line-height: 1.3; margin: 0 0 10px; font-weight: 900; }
+  .hero h1 em { font-style: normal; color: var(--peach-d); }
+  .hero p { margin: 0; color: #6d5854; max-width: 30em; }
+  .hero .points { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .hero .points span { background: rgba(255,255,255,.75); border-radius: 999px; padding: 5px 12px; font-size: 13px; font-weight: 500; }
+  .hero-art { position: absolute; right: 24px; bottom: -6px; width: 190px; opacity: .95; pointer-events: none; }
+
+  .progress { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; font-size: 13px; color: var(--sub); }
+  .progress .track { flex: 1; height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; }
+  .progress .fill { height: 100%; background: linear-gradient(90deg, var(--peach), var(--gold)); border-radius: 4px; transition: width .3s; }
+  .qs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .q { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); transition: border-color .2s; }
+  .q.done { border-color: color-mix(in srgb, var(--peach) 45%, var(--line)); }
+  .q h3 { display: flex; align-items: center; gap: 10px; font-size: 16px; margin: 0 0 12px; }
+  .qn { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--peach-l); color: var(--peach-d); font-size: 13px; font-weight: 700; flex: none; }
+  .q.done .qn { background: var(--peach); color: #fff; }
+  .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .opt {
+    border: 1.5px solid var(--line); background: #fff; border-radius: 999px; padding: 8px 16px;
+    font-size: 14px; cursor: pointer; transition: all .15s;
+  }
+  .opt:hover { border-color: var(--peach); }
+  .opt.on { background: var(--peach); border-color: var(--peach); color: #fff; font-weight: 700; }
+  .cta {
+    display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 18px; padding: 16px;
+    border: 0; border-radius: 16px; background: var(--accent); color: #fff; font-size: 16px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 35%, transparent); transition: background .15s, transform .1s;
+  }
+  .cta:hover { background: var(--accent-d); }
+  .cta:active { transform: translateY(1px); }
+  .cta:disabled { background: var(--faint); box-shadow: none; cursor: default; }
+
+  /* ---------- 一覧 ---------- */
+  .filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+  .search { position: relative; flex: 1 1 220px; min-width: 0; }
+  .search svg { position: absolute; left: 12px; top: 50%; width: 16px; height: 16px; transform: translateY(-50%); color: var(--faint); }
+  .search input { width: 100%; padding-left: 36px; }
+  select, input[type=search], input[type=number], textarea {
+    font: inherit; font-size: 14px; padding: 10px 12px; border-radius: 12px;
+    border: 1px solid var(--line); background: #fff; color: var(--ink);
+  }
+  select { padding-right: 30px; cursor: pointer; }
+  .summary { font-size: 13px; color: var(--sub); margin: -6px 0 14px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px;
+    display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(80,40,30,.05), 0 12px 28px rgba(80,40,30,.09); }
+  .card.best { border-color: var(--peach); }
+  .card .top { display: flex; gap: 14px; align-items: center; }
+  .avatar { width: 60px; height: 60px; border-radius: 50%; flex: none; display: grid; place-items: center; font-size: 28px; box-shadow: inset 0 0 0 3px rgba(255,255,255,.8); }
+  .who-t { flex: 1; min-width: 0; }
+  .name { font-weight: 700; font-size: 18px; line-height: 1.3; }
+  .meta { color: var(--sub); font-size: 12.5px; display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 2px; }
+  .meta .star { color: var(--gold); font-weight: 700; }
+  .ring {
+    --p: 0; width: 58px; height: 58px; border-radius: 50%; flex: none; display: grid; place-items: center;
+    background: conic-gradient(var(--peach) calc(var(--p) * 1%), var(--line) 0);
+  }
+  .ring div { width: 46px; height: 46px; border-radius: 50%; background: #fff; display: grid; place-items: center; line-height: 1.05; text-align: center; }
+  .ring b { font-size: 15px; color: var(--peach-d); }
+  .ring small { display: block; font-size: 9px; color: var(--sub); }
+  .ribbon { align-self: flex-start; font-size: 11px; font-weight: 700; color: #fff; background: linear-gradient(90deg, var(--peach), var(--gold)); padding: 3px 10px; border-radius: 999px; margin-bottom: -4px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { display: inline-flex; align-items: center; gap: 4px; background: #f6f1ef; color: #6d5854; font-size: 12px; padding: 4px 10px; border-radius: 999px; }
+  .tag.hit { background: var(--leaf-l); color: var(--leaf-d); font-weight: 700; }
+  .bio { font-size: 13.5px; line-height: 1.8; margin: 0; color: #5d4a47; }
+  .foot { display: flex; align-items: center; gap: 10px; margin-top: auto; padding-top: 12px; border-top: 1px dashed var(--line); }
+  .price { margin-right: auto; font-size: 12px; color: var(--sub); line-height: 1.3; }
+  .price b { display: block; font-size: 18px; color: var(--ink); }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 16px; border-radius: 12px;
+    border: 1.5px solid var(--accent); background: #fff; color: var(--accent-d); font-size: 14px; font-weight: 700; cursor: pointer; transition: all .15s;
+  }
+  .btn:hover { background: var(--accent-l); }
+  .btn.solid { background: var(--accent); color: #fff; }
+  .btn.solid:hover { background: var(--accent-d); border-color: var(--accent-d); }
+  .btn.ghost { border-color: var(--line); color: var(--sub); }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .icon-btn { width: 42px; height: 42px; padding: 0; border-radius: 50%; border: 1.5px solid var(--line); color: var(--faint); }
+  .icon-btn svg { width: 20px; height: 20px; }
+  .icon-btn.on { color: var(--peach-d); border-color: var(--peach); background: var(--peach-l); }
+  .empty { grid-column: 1 / -1; text-align: center; color: var(--sub); padding: 40px 16px; background: var(--surface); border: 1px dashed var(--line); border-radius: var(--radius); font-size: 14px; }
+  .empty .e { font-size: 32px; display: block; margin-bottom: 6px; }
+
+  /* ---------- 予約・申し込み ---------- */
+  .list { display: flex; flex-direction: column; gap: 10px; }
+  .item { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; display: flex; gap: 14px; align-items: center; box-shadow: var(--shadow); }
+  .item .avatar { width: 46px; height: 46px; font-size: 22px; }
+  .item .grow { flex: 1; min-width: 0; }
+  .item .name { font-size: 16px; }
+  .item .note { font-size: 13px; color: #6d5854; background: #faf5f3; border-radius: 10px; padding: 6px 10px; margin-top: 6px; }
+  .when { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; color: var(--ink); }
+  .when svg { width: 14px; height: 14px; color: var(--accent-d); }
+  .status { font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; background: #fff3d6; color: #9a6b0c; white-space: nowrap; }
+  .status.ok { background: var(--leaf-l); color: var(--leaf-d); }
+  .status.ng { background: #f2eeed; color: var(--sub); }
+  .link { background: none; border: 0; color: var(--sub); font-size: 12px; text-decoration: underline; cursor: pointer; padding: 0; margin-top: 4px; }
+  .stu { width: 46px; height: 46px; border-radius: 50%; flex: none; display: grid; place-items: center; background: var(--leaf-l); color: var(--leaf-d); font-weight: 700; font-size: 17px; }
+  .acts { display: flex; gap: 8px; flex: none; }
+
+  /* ---------- 講師 ---------- */
+  .who-bar { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; margin-bottom: 20px; box-shadow: var(--shadow); }
+  .who-bar .avatar { width: 44px; height: 44px; font-size: 22px; }
+  .who-bar label { font-size: 12px; color: var(--sub); display: block; }
+  .who-bar select { margin-left: auto; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .stat { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; box-shadow: var(--shadow); }
+  .stat span { font-size: 12px; color: var(--sub); }
+  .stat b { display: block; font-size: 28px; line-height: 1.2; }
+  .stat.hot b { color: #c0841a; }
+  .twocol { display: grid; grid-template-columns: 1.25fr 1fr; gap: 24px; align-items: start; }
+  .form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+  .form label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700; }
+  .form label.wide { grid-column: 1 / -1; }
+  .form .hint { font-weight: 400; font-size: 12px; color: var(--sub); }
+  .form textarea { resize: vertical; line-height: 1.7; }
+  .form .cta { grid-column: 1 / -1; margin-top: 4px; }
+  .preview-wrap { position: sticky; top: 84px; }
+  .preview-wrap .cap { font-size: 12px; font-weight: 700; color: var(--sub); margin-bottom: 8px; }
+  .preview .card { pointer-events: none; }
+
+  /* ---------- モーダル ---------- */
+  dialog { border: 0; border-radius: 24px; padding: 0; width: min(460px, calc(100% - 32px)); color: var(--ink); box-shadow: 0 20px 60px rgba(60,30,25,.25); }
+  dialog::backdrop { background: rgba(59,46,44,.45); backdrop-filter: blur(2px); }
+  .dlg { padding: 24px; }
+  .dlg-top { display: flex; gap: 14px; align-items: center; margin-bottom: 16px; }
+  .dlg h3 { margin: 0; font-size: 19px; }
+  .dlg .label { font-size: 13px; font-weight: 700; margin: 16px 0 8px; }
+  .slots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .slot { padding: 11px 8px; border-radius: 12px; border: 1.5px solid var(--line); background: #fff; font-size: 13.5px; cursor: pointer; transition: all .15s; }
+  .slot:hover { border-color: var(--peach); }
+  .slot.on { border-color: var(--peach); background: var(--peach-l); color: var(--peach-d); font-weight: 700; }
+  .dlg textarea { width: 100%; resize: vertical; }
+  .bill { display: flex; justify-content: space-between; align-items: baseline; background: #faf5f3; border-radius: 12px; padding: 12px 14px; margin-top: 16px; font-size: 13px; color: var(--sub); }
+  .bill b { font-family: "Zen Maru Gothic", sans-serif; font-size: 20px; color: var(--ink); }
+  .bill s { margin-right: 6px; }
+  .dlg .row { display: flex; gap: 10px; margin-top: 18px; }
+  .dlg .row .btn { flex: 1; padding: 13px; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 28px; z-index: 50; transform: translateX(-50%) translateY(16px);
+    background: var(--ink); color: #fff; padding: 12px 20px; border-radius: 14px; font-size: 14px; box-shadow: 0 8px 24px rgba(0,0,0,.18);
+    opacity: 0; transition: .25s; pointer-events: none; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  footer { max-width: 1040px; margin: 0 auto; padding: 0 20px 40px; font-size: 12px; color: var(--faint); text-align: center; }
+
+  /* ---------- レスポンシブ ---------- */
+  @media (max-width: 820px) {
+    .twocol { grid-template-columns: 1fr; }
+    .preview-wrap { position: static; }
+    .qs { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    body { font-size: 14px; }
+    /* backdrop-filter があると、中の position:fixed（下のタブ）がヘッダー基準になって上に張りつく */
+    header { backdrop-filter: none; background: var(--bg); }
+    .bar { padding: 10px 16px; }
+    .logo small { display: none; }
+    .role { margin-left: auto; }
+    /* スマホは下にアプリ風のタブ */
+    nav.tabs {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; margin: 0; gap: 0; justify-content: space-around;
+      background: rgba(255,255,255,.96); backdrop-filter: blur(10px); border-top: 1px solid var(--line);
+      padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+    }
+    nav.tabs button { flex: 1; flex-direction: column; gap: 2px; padding: 6px 4px; font-size: 11px; border-radius: 12px; position: relative; }
+    nav.tabs button.on { background: transparent; color: var(--accent-d); }
+    nav.tabs svg { width: 22px; height: 22px; }
+    nav.tabs .badge { position: absolute; top: 2px; left: calc(50% + 6px); }
+    nav.tabs button.on .badge { background: var(--accent-d); color: #fff; }
+    main { padding: 20px 16px 110px; }
+    .hero { padding: 26px 20px 120px; border-radius: 22px; }
+    .hero h1 { font-size: 26px; }
+    .hero-art { width: 150px; right: 50%; transform: translateX(50%); }
+    h2 { font-size: 22px; }
+    .grid { grid-template-columns: 1fr; }
+    .filters select { flex: 1 1 30%; min-width: 0; }
+    .stats { gap: 8px; }
+    .stat { padding: 12px; }
+    .stat b { font-size: 22px; }
+    .form { grid-template-columns: 1fr; padding: 16px; }
+    .item { flex-wrap: wrap; }
+    .item .acts { width: 100%; }
+    .item .acts .btn { flex: 1; }
+    .who-bar { flex-wrap: wrap; }
+    .who-bar select { margin-left: 0; width: 100%; }
+    .toast { bottom: 90px; }
+    footer { padding-bottom: 100px; }
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-spark" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></g></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></g></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13l2.5-7h11L20 13v6H4z"/><path d="M4 13h5l1 2h4l1-2h5"/></g></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></g></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></symbol>
+  <symbol id="i-heart-f" viewBox="0 0 24 24"><path fill="currentColor" d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z"/><circle cx="12" cy="10" r="2"/></g></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></g></symbol>
+</svg>
+
+<header>
+  <div class="bar">
+    <div class="logo">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="37" r="21" fill="#f2998d"/><path d="M32 18c0 8 0 30 0 38" stroke="#e07a6e" stroke-width="2" fill="none" opacity=".5"/><path d="M32 16c5-8 15-9 18-5-6 1-12 4-18 7z" fill="#5e9e74"/></svg>
+      <span>もも<em>ヨガ</em></span><small>岡山のヨガ先生マッチング</small>
+    </div>
+    <nav class="tabs" aria-label="画面の切り替え">
+      <button data-tab="match" data-for="student" class="on"><svg><use href="#i-spark"/></svg>診断</button>
+      <button data-tab="list" data-for="student"><svg><use href="#i-search"/></svg>さがす</button>
+      <button data-tab="mine" data-for="student"><svg><use href="#i-cal"/></svg>予約<span class="badge" id="badge"></span></button>
+      <button data-tab="treq" data-for="teacher" class="hidden"><svg><use href="#i-inbox"/></svg>申し込み<span class="badge" id="tbadge"></span></button>
+      <button data-tab="tprof" data-for="teacher" class="hidden"><svg><use href="#i-user"/></svg>プロフィール</button>
+    </nav>
+    <div class="role" role="group" aria-label="生徒と講師の切り替え">
+      <button data-role="student" class="on">生徒</button>
+      <button data-role="teacher">講師</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- 生徒：診断 -->
+  <section id="tab-match">
+    <div class="hero">
+      <h1>あなたに合う<br><em>ヨガの先生</em>、見つけよう。</h1>
+      <p>4つの質問に答えるだけ。岡山・倉敷の先生から、目的や通いやすさが合う人を相性順にご紹介します。</p>
+      <div class="points"><span>🧘 体験レッスンは半額</span><span>📍 岡山駅前・表町・倉敷・オンライン</span></div>
+      <svg class="hero-art" viewBox="0 0 200 150" aria-hidden="true">
+        <ellipse cx="100" cy="140" rx="90" ry="9" fill="#5e9e74" opacity=".15"/>
+        <circle cx="100" cy="34" r="16" fill="#f2998d"/>
+        <path d="M100 52c-14 0-20 14-20 30l20 14 20-14c0-16-6-30-20-30z" fill="#ee8a7e"/>
+        <path d="M80 70c-18 8-34 6-46-4M120 70c18 8 34 6 46-4" stroke="#ee8a7e" stroke-width="9" stroke-linecap="round" fill="none"/>
+        <path d="M80 96c-16 10-30 26-12 38h64c18-12 4-28-12-38" fill="#5e9e74" opacity=".85"/>
+        <path d="M150 18c6-10 18-10 22-5-8 1-15 4-22 9z" fill="#5e9e74"/>
+        <circle cx="40" cy="28" r="4" fill="#e2a93b" opacity=".7"/><circle cx="170" cy="48" r="3" fill="#e2a93b" opacity=".7"/>
+      </svg>
+    </div>
+    <div class="progress"><span id="progText">0 / 4</span><div class="track"><div class="fill" id="progFill" style="width:0"></div></div></div>
+    <div class="qs" id="quiz"></div>
+    <button class="cta" id="go" disabled>あと4問 答えてください</button>
+  </section>
+
+  <!-- 生徒：さがす -->
+  <section id="tab-list" class="hidden">
+    <div class="head">
+      <div class="eyebrow">FIND YOUR TEACHER</div>
+      <h2 id="listTitle">先生をさがす</h2>
+      <p class="lead" id="listLead"></p>
+    </div>
+    <div class="filters">
+      <label class="search"><svg><use href="#i-search"/></svg><input type="search" id="q" placeholder="名前・キーワード（例：腰痛、朝）" aria-label="キーワード"></label>
+      <select id="fArea" aria-label="エリア"><option value="">エリアすべて</option></select>
+      <select id="fStyle" aria-label="スタイル"><option value="">スタイルすべて</option></select>
+      <select id="fSort" aria-label="並び順">
+        <option value="score">相性順</option>
+        <option value="price">料金が安い順</option>
+        <option value="rating">評価順</option>
+      </select>
+    </div>
+    <div class="summary" id="summary"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <!-- 生徒：予約 -->
+  <section id="tab-mine" class="hidden">
+    <div class="head">
+      <div class="eyebrow">MY LESSONS</div>
+      <h2>申し込んだレッスン</h2>
+      <p class="lead">先生が承認すると「確定」になります。右上の「講師」に切り替えると、先生として承認できます。</p>
+    </div>
+    <div class="list" id="mine"></div>
+    <h3 class="sec">お気に入りの先生</h3>
+    <div class="grid" id="favs"></div>
+  </section>
+
+  <!-- 講師：申し込み -->
+  <section id="tab-treq" class="hidden">
+    <div class="who-bar">
+      <div class="avatar" id="meAvatar"></div>
+      <div><label for="meSel">ログイン中の講師</label><b id="meName"></b></div>
+      <select id="meSel"></select>
+    </div>
+    <div class="head">
+      <div class="eyebrow">REQUESTS</div>
+      <h2>体験レッスンの申し込み</h2>
+      <p class="lead">承認すると、生徒の画面で「確定」に変わります。</p>
+    </div>
+    <div class="stats" id="tStats"></div>
+    <h3 class="sec">承認待ち <span class="count" id="cPending"></span></h3>
+    <div class="list" id="tPending"></div>
+    <h3 class="sec">対応済み <span class="count" id="cDone"></span></h3>
+    <div class="list" id="tOk"></div>
+  </section>
+
+  <!-- 講師：プロフィール -->
+  <section id="tab-tprof" class="hidden">
+    <div class="head">
+      <div class="eyebrow">PROFILE</div>
+      <h2>プロフィールの編集</h2>
+      <p class="lead">保存すると、生徒の「さがす」と相性診断にすぐ反映されます。</p>
+    </div>
+    <div class="twocol">
+      <form class="form" id="pForm" novalidate>
+        <label class="wide">紹介文 <span class="hint">120文字まで。どんな人に向いたクラスかを書くと選ばれやすくなります</span>
+          <textarea id="pBio" rows="4" maxlength="120"></textarea></label>
+        <label>エリア<select id="pArea"></select></label>
+        <label>スタイル<select id="pStyle"></select></label>
+        <label>対象<select id="pLevel"></select></label>
+        <label>得意な目的<select id="pGoal"></select></label>
+        <label>クラスの時間帯<select id="pTime"></select></label>
+        <label>1回の料金（円）<input type="number" id="pPrice" min="500" max="20000" step="100" inputmode="numeric"></label>
+        <button class="cta">保存する</button>
+      </form>
+      <div class="preview-wrap">
+        <div class="cap">生徒からの見え方</div>
+        <div class="preview" id="pPreview"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>表示している先生・生徒はすべて架空のデモデータです。申し込み内容はこのブラウザの中にだけ保存されます。</footer>
+
+<dialog id="dlg" aria-labelledby="dName">
+  <form method="dialog" class="dlg">
+    <div class="dlg-top"><div class="avatar" id="dAvatar"></div><div><h3 id="dName"></h3><div class="meta" id="dMeta"></div></div></div>
+    <div class="label">日時をえらぶ</div>
+    <div class="slots" id="slots"></div>
+    <div class="label">先生へのひとこと（任意）</div>
+    <textarea id="note" rows="2" placeholder="例：腰痛があります／ヨガははじめてです"></textarea>
+    <div class="bill"><span>体験レッスン料金</span><span><s id="dFull"></s><b id="dHalf"></b></span></div>
+    <div class="row">
+      <button class="btn ghost" value="cancel" formnovalidate>やめる</button>
+      <button class="btn solid" id="send" value="ok" disabled>申し込む</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+// ---- データ（架空の先生） ----
+const DEFAULT_TEACHERS = [
+  { id: 1, name: "さくら先生", emoji: "🌸", color: "#fde2e4", area: "岡山駅前", style: "ハタ", level: "初心者", goal: "リラックス", time: "夜", price: 2500, rating: 4.9, years: 8,
+    bio: "仕事帰りにゆったり。呼吸を中心に、体が硬い方でも無理なく続けられるクラスです。" },
+  { id: 2, name: "ゆうき先生", emoji: "🔥", color: "#ffe1cc", area: "表町", style: "パワー", level: "経験者", goal: "引き締め", time: "朝", price: 3000, rating: 4.7, years: 6,
+    bio: "汗をかきたい人向け。朝7時から、体幹と脚をしっかり使う流れるようなクラス。" },
+  { id: 3, name: "みどり先生", emoji: "🌿", color: "#dff3e4", area: "倉敷", style: "陰ヨガ", level: "初心者", goal: "リラックス", time: "夜", price: 2000, rating: 4.8, years: 10,
+    bio: "1ポーズを3〜5分。深く伸ばして眠りの質を上げたい方におすすめです。" },
+  { id: 4, name: "あおい先生", emoji: "🌊", color: "#dcecfb", area: "岡山駅前", style: "ヴィンヤサ", level: "経験者", goal: "柔軟性", time: "昼", price: 2800, rating: 4.6, years: 5,
+    bio: "動きと呼吸をつなぐヴィンヤサ。少し慣れてきた方のステップアップに。" },
+  { id: 5, name: "はるか先生", emoji: "🤰", color: "#f3e5f5", area: "東区", style: "マタニティ", level: "初心者", goal: "体の不調", time: "昼", price: 2200, rating: 5.0, years: 7,
+    bio: "助産師さんと連携したマタニティ・産後ヨガ。お子さま連れOKのクラスもあります。" },
+  { id: 6, name: "けんた先生", emoji: "🧘", color: "#fff3c4", area: "表町", style: "ハタ", level: "経験者", goal: "体の不調", time: "朝", price: 2600, rating: 4.5, years: 12,
+    bio: "肩こり・腰痛の改善が得意。解剖学にもとづいて、ひとりひとりのクセを見ます。" },
+  { id: 7, name: "ななみ先生", emoji: "🍑", color: "#ffe4de", area: "倉敷", style: "ヴィンヤサ", level: "初心者", goal: "引き締め", time: "夜", price: 2400, rating: 4.7, years: 4,
+    bio: "はじめてでも楽しく動けるやさしいフロー。美観地区近くの小さなスタジオです。" },
+  { id: 8, name: "りょう先生", emoji: "🌙", color: "#e3e1f7", area: "オンライン", style: "陰ヨガ", level: "初心者", goal: "リラックス", time: "夜", price: 1500, rating: 4.6, years: 3,
+    bio: "おうちから参加できる夜21時のオンラインクラス。寝る前の30分で一日をリセット。" },
+];
+
+const QUESTIONS = [
+  { key: "goal",  q: "いちばんの目的は？",   opts: ["リラックス", "引き締め", "柔軟性", "体の不調"] },
+  { key: "level", q: "ヨガの経験は？",       opts: ["初心者", "経験者"] },
+  { key: "time",  q: "通いやすい時間帯は？", opts: ["朝", "昼", "夜"] },
+  { key: "area",  q: "通いたいエリアは？",   opts: ["岡山駅前", "表町", "東区", "倉敷", "オンライン"] },
+];
+const WEIGHT = { goal: 35, level: 20, time: 20, area: 25 };
+const STYLES = ["ハタ", "ヴィンヤサ", "パワー", "陰ヨガ", "マタニティ"];
+const optsOf = (key) => QUESTIONS.find((q) => q.key === key).opts;
+
+// ---- 状態 ----
+const store = {
+  get(k, d) { try { return JSON.parse(localStorage.getItem("momoyoga_" + k)) ?? d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem("momoyoga_" + k, JSON.stringify(v)); } catch {} },
+};
+let answers = store.get("answers", {});
+let favs = store.get("favs", []);
+let bookings = store.get("bookings", []);
+let TEACHERS = store.get("teachers", DEFAULT_TEACHERS);
+let me = store.get("me", 1);
+const isMine = (b) => !b.who || b.who === "あなた";
+
+// 講師画面が空にならないよう、ほかの生徒（架空）からの申し込みを最初に入れておく
+if (!store.get("seeded", false)) {
+  const d = new Date(), day = (n) => { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate() + n); return `${x.getMonth() + 1}/${x.getDate()}(${"日月火水木金土"[x.getDay()]})`; };
+  const seed = [
+    [1, "山本さん", `${day(2)} 19:00`, "デスクワークで肩がガチガチです", "pending"],
+    [1, "田中さん", `${day(3)} 21:00`, "", "pending"],
+    [1, "佐藤さん", `${day(1)} 19:00`, "ヨガははじめてです", "ok"],
+    [2, "中村さん", `${day(2)} 7:00`, "", "pending"],
+    [3, "小林さん", `${day(1)} 19:00`, "寝つきが悪くて…", "pending"],
+    [5, "加藤さん", `${day(4)} 12:00`, "妊娠6か月です", "pending"],
+    [7, "吉田さん", `${day(2)} 21:00`, "", "ok"],
+  ];
+  seed.forEach(([tid, who, slot, note, status], i) => bookings.push({ id: 1000 + i, tid, who, slot, note, status }));
+  store.set("bookings", bookings); store.set("seeded", true);
+}
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const yen = (n) => "¥" + n.toLocaleString();
+const quizDone = () => QUESTIONS.every((q) => answers[q.key]);
+
+function score(t) {
+  if (!quizDone()) return null;
+  let s = 0;
+  for (const k in WEIGHT) {
+    if (t[k] === answers[k]) s += WEIGHT[k];
+    else if (k === "area" && (t.area === "オンライン" || answers.area === "オンライン")) s += 8;
+    else if (k === "level" && answers.level === "経験者") s += 12; // 経験者は初心者クラスも可
+  }
+  return Math.min(99, Math.round(s * 0.9 + t.rating * 2));
+}
+
+// ---- タブ ----
+function showTab(name) {
+  document.querySelectorAll("nav.tabs button").forEach((b) => b.classList.toggle("on", b.dataset.tab === name));
+  ["match", "list", "mine", "treq", "tprof"].forEach((n) => $("#tab-" + n).classList.toggle("hidden", n !== name));
+  if (name === "list") renderList();
+  if (name === "mine") renderMine();
+  if (name === "treq") renderReq();
+  if (name === "tprof") renderProf();
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll("nav.tabs button").forEach((b) => (b.onclick = () => showTab(b.dataset.tab)));
+
+function setRole(r) {
+  document.body.classList.toggle("teacher", r === "teacher");
+  document.querySelectorAll(".role button").forEach((b) => b.classList.toggle("on", b.dataset.role === r));
+  document.querySelectorAll("nav.tabs button").forEach((b) => b.classList.toggle("hidden", b.dataset.for !== r));
+  showTab(r === "teacher" ? "treq" : "match");
+}
+document.querySelectorAll(".role button").forEach((b) => (b.onclick = () => setRole(b.dataset.role)));
+
+// ---- 診断 ----
+function renderQuiz() {
+  $("#quiz").innerHTML = QUESTIONS.map((q, i) => `
+    <div class="q ${answers[q.key] ? "done" : ""}"><h3><span class="qn">${answers[q.key] ? "✓" : i + 1}</span>${q.q}</h3><div class="opts">
+      ${q.opts.map((o) => `<button class="opt ${answers[q.key] === o ? "on" : ""}" data-k="${q.key}" data-v="${o}" aria-pressed="${answers[q.key] === o}">${o}</button>`).join("")}
+    </div></div>`).join("");
+  $("#quiz").querySelectorAll(".opt").forEach((b) => (b.onclick = () => {
+    answers[b.dataset.k] = b.dataset.v;
+    store.set("answers", answers);
+    renderQuiz();
+  }));
+  const n = QUESTIONS.filter((q) => answers[q.key]).length;
+  $("#progText").textContent = `${n} / ${QUESTIONS.length}`;
+  $("#progFill").style.width = (n / QUESTIONS.length) * 100 + "%";
+  $("#go").disabled = n < QUESTIONS.length;
+  $("#go").textContent = n < QUESTIONS.length ? `あと${QUESTIONS.length - n}問 答えてください` : "相性の良い先生を見る →";
+}
+$("#go").onclick = () => { $("#fSort").value = "score"; showTab("list"); };
+
+// ---- 一覧 ----
+function fillSelect(sel, values) {
+  values.forEach((v) => sel.insertAdjacentHTML("beforeend", `<option>${v}</option>`));
+}
+fillSelect($("#fArea"), optsOf("area"));
+fillSelect($("#fStyle"), STYLES);
+["#q", "#fArea", "#fStyle", "#fSort"].forEach((s) => $(s).addEventListener("input", renderList));
+
+function cardHTML(t, best) {
+  const sc = score(t);
+  const fav = favs.includes(t.id);
+  const hit = (k) => (quizDone() && t[k] === answers[k] ? "hit" : "");
+  return `<article class="card ${best ? "best" : ""}">
+    ${best ? `<span class="ribbon">いちばん相性が良い先生</span>` : ""}
+    <div class="top">
+      <div class="avatar" style="background:${t.color}">${t.emoji}</div>
+      <div class="who-t"><div class="name">${esc(t.name)}</div>
+        <div class="meta"><span class="star">★ ${t.rating.toFixed(1)}</span><span>指導歴 ${t.years}年</span></div></div>
+      ${sc !== null ? `<div class="ring" style="--p:${sc}" aria-label="相性${sc}%"><div><span><b>${sc}%</b><small>相性</small></span></div></div>` : ""}
+    </div>
+    <div class="tags">
+      <span class="tag ${hit("area")}"><svg width="12" height="12"><use href="#i-pin"/></svg>${t.area}</span>
+      <span class="tag">${t.style}</span>
+      <span class="tag ${hit("level")}">${t.level}向け</span>
+      <span class="tag ${hit("time")}"><svg width="12" height="12"><use href="#i-clock"/></svg>${t.time}クラス</span>
+      <span class="tag ${hit("goal")}">${t.goal}</span>
+    </div>
+    <p class="bio">${esc(t.bio)}</p>
+    <div class="foot">
+      <div class="price">1回<b>${yen(t.price)}</b></div>
+      <button class="btn icon-btn ${fav ? "on" : ""}" data-fav="${t.id}" aria-label="お気に入り" aria-pressed="${fav}"><svg><use href="#i-heart${fav ? "-f" : ""}"/></svg></button>
+      <button class="btn solid" data-book="${t.id}">体験を申し込む</button>
+    </div>
+  </article>`;
+}
+
+function bindCards(root) {
+  root.querySelectorAll("[data-fav]").forEach((b) => (b.onclick = () => {
+    const id = +b.dataset.fav;
+    favs = favs.includes(id) ? favs.filter((x) => x !== id) : [...favs, id];
+    store.set("favs", favs);
+    toast(favs.includes(id) ? "お気に入りに追加しました" : "お気に入りから外しました");
+    if (!$("#tab-list").classList.contains("hidden")) renderList(); else renderMine();
+  }));
+  root.querySelectorAll("[data-book]").forEach((b) => (b.onclick = () => openBook(+b.dataset.book)));
+}
+
+function renderList() {
+  const kw = $("#q").value.trim();
+  const area = $("#fArea").value, style = $("#fStyle").value, sort = $("#fSort").value;
+  let rows = TEACHERS.filter((t) =>
+    (!area || t.area === area) && (!style || t.style === style) &&
+    (!kw || (t.name + t.bio + t.style + t.area + t.goal + t.time).includes(kw)));
+  rows.sort((a, b) =>
+    sort === "price" ? a.price - b.price :
+    sort === "rating" ? b.rating - a.rating :
+    (score(b) ?? b.rating) - (score(a) ?? a.rating));
+  const done = quizDone();
+  $("#listTitle").textContent = done ? "あなたへのおすすめ" : "先生をさがす";
+  $("#listLead").innerHTML = done
+    ? `「${answers.goal}・${answers.level}・${answers.time}・${answers.area}」で相性を出しました。<button class="link" id="redo">答えなおす</button>`
+    : `診断に答えると、相性の高い順に並びます。<button class="link" id="redo">診断する</button>`;
+  $("#redo").onclick = () => showTab("match");
+  $("#summary").textContent = `${rows.length}人の先生`;
+  const bestId = done && sort === "score" && rows.length ? rows[0].id : null;
+  $("#grid").innerHTML = rows.length ? rows.map((t) => cardHTML(t, t.id === bestId)).join("")
+    : `<div class="empty"><span class="e">🔍</span>条件に合う先生がいません。絞り込みをゆるめてみてください。</div>`;
+  bindCards($("#grid"));
+}
+
+// ---- 申し込み ----
+let current = null, slot = null;
+function nextSlots(t) {
+  const hours = { 朝: ["7:00", "8:30"], 昼: ["12:00", "14:00"], 夜: ["19:00", "21:00"] }[t.time];
+  const out = [], d = new Date();
+  for (let i = 1; out.length < 6; i++) {
+    const day = new Date(d.getFullYear(), d.getMonth(), d.getDate() + i);
+    const label = `${day.getMonth() + 1}/${day.getDate()}(${"日月火水木金土"[day.getDay()]})`;
+    hours.forEach((h) => out.length < 6 && out.push(`${label} ${h}`));
+  }
+  return out;
+}
+function openBook(id) {
+  current = TEACHERS.find((t) => t.id === id); slot = null;
+  $("#dAvatar").style.background = current.color;
+  $("#dAvatar").textContent = current.emoji;
+  $("#dName").textContent = `${current.name}の体験レッスン`;
+  $("#dMeta").textContent = `${current.area} ・ ${current.style} ・ ${current.time}クラス`;
+  $("#dFull").textContent = yen(current.price);
+  $("#dHalf").textContent = yen(Math.round(current.price / 2));
+  $("#note").value = "";
+  $("#send").disabled = true;
+  $("#slots").innerHTML = nextSlots(current).map((s) => `<button type="button" class="slot">${s}</button>`).join("");
+  $("#slots").querySelectorAll(".slot").forEach((b) => (b.onclick = () => {
+    $("#slots").querySelectorAll(".slot").forEach((x) => x.classList.remove("on"));
+    b.classList.add("on"); slot = b.textContent; $("#send").disabled = false;
+  }));
+  $("#dlg").showModal();
+}
+$("#dlg").addEventListener("close", () => {
+  if ($("#dlg").returnValue !== "ok" || !slot) return;
+  const b = { id: Date.now(), tid: current.id, who: "あなた", slot, note: $("#note").value.trim(), status: "pending" };
+  bookings.unshift(b); store.set("bookings", bookings);
+  updateBadge();
+  toast(`${current.name}に申し込みました`);
+});
+
+// ---- 予約一覧 ----
+function statusHTML(b) {
+  const [cls, label] = { ok: ["ok", "確定"], ng: ["ng", "お断り"], pending: ["", "承認待ち"] }[b.status];
+  return `<span class="status ${cls}">${label}</span>`;
+}
+const whenHTML = (b) => `<span class="when"><svg><use href="#i-cal"/></svg>${b.slot}</span>`;
+const noteHTML = (b) => (b.note ? `<div class="note">「${esc(b.note)}」</div>` : "");
+
+function renderMine() {
+  updateBadge();
+  const own = bookings.filter(isMine);
+  $("#mine").innerHTML = own.length ? own.map((b) => {
+    const t = TEACHERS.find((x) => x.id === b.tid);
+    return `<div class="item">
+      <div class="avatar" style="background:${t.color}">${t.emoji}</div>
+      <div class="grow"><div class="name">${esc(t.name)}</div>
+        <div class="meta">${whenHTML(b)}<span>${t.area}</span></div>${noteHTML(b)}
+        <button class="link" data-cancel="${b.id}">取り消す</button></div>
+      ${statusHTML(b)}
+    </div>`;
+  }).join("") : `<div class="empty"><span class="e">🧘</span>まだ申し込みはありません。「さがす」から体験レッスンを申し込めます。</div>`;
+  $("#mine").querySelectorAll("[data-cancel]").forEach((b) => (b.onclick = () => {
+    bookings = bookings.filter((x) => x.id !== +b.dataset.cancel);
+    store.set("bookings", bookings); renderMine(); toast("申し込みを取り消しました");
+  }));
+  const fl = TEACHERS.filter((t) => favs.includes(t.id));
+  $("#favs").innerHTML = fl.length ? fl.map((t) => cardHTML(t)).join("") : `<div class="empty"><span class="e">♡</span>先生のカードの♡を押すと、ここに並びます。</div>`;
+  bindCards($("#favs"));
+}
+function updateBadge() {
+  const n = bookings.filter(isMine).length;
+  const tn = bookings.filter((b) => b.tid === me && b.status === "pending").length;
+  $("#badge").textContent = n || ""; $("#badge").dataset.n = n;
+  $("#tbadge").textContent = tn || ""; $("#tbadge").dataset.n = tn;
+}
+
+// ---- 講師：申し込み ----
+TEACHERS.forEach((t) => $("#meSel").insertAdjacentHTML("beforeend", `<option value="${t.id}">${esc(t.name)}</option>`));
+$("#meSel").value = me;
+$("#meSel").onchange = () => { me = +$("#meSel").value; store.set("me", me); renderReq(); };
+
+function reqItem(b) {
+  return `<div class="item">
+    <div class="stu">${esc(b.who.slice(0, 1))}</div>
+    <div class="grow"><div class="name">${esc(b.who)}${isMine(b) ? " <span class=\"meta\" style=\"display:inline\">（このブラウザの生徒）</span>" : ""}</div>
+      <div class="meta">${whenHTML(b)}</div>${noteHTML(b)}</div>
+    ${b.status === "pending"
+      ? `<div class="acts"><button class="btn ghost" data-ng="${b.id}">お断り</button><button class="btn solid" data-ok="${b.id}">承認する</button></div>`
+      : statusHTML(b)}
+  </div>`;
+}
+function renderReq() {
+  updateBadge();
+  const t = TEACHERS.find((x) => x.id === me);
+  $("#meAvatar").style.background = t.color;
+  $("#meAvatar").textContent = t.emoji;
+  $("#meName").textContent = t.name;
+  const mine = bookings.filter((b) => b.tid === me);
+  const pending = mine.filter((b) => b.status === "pending");
+  const done = mine.filter((b) => b.status !== "pending");
+  $("#tStats").innerHTML = `
+    <div class="stat ${pending.length ? "hot" : ""}"><span>承認待ち</span><b>${pending.length}</b></div>
+    <div class="stat"><span>確定</span><b>${mine.filter((b) => b.status === "ok").length}</b></div>
+    <div class="stat"><span>評価</span><b>★ ${t.rating.toFixed(1)}</b></div>`;
+  $("#cPending").textContent = `${pending.length}件`;
+  $("#cDone").textContent = `${done.length}件`;
+  $("#tPending").innerHTML = pending.length ? pending.map(reqItem).join("") : `<div class="empty"><span class="e">🌿</span>承認待ちの申し込みはありません</div>`;
+  $("#tOk").innerHTML = done.length ? done.map(reqItem).join("") : `<div class="empty">まだありません</div>`;
+  $("#tab-treq").querySelectorAll("[data-ok],[data-ng]").forEach((btn) => (btn.onclick = () => {
+    const ok = !!btn.dataset.ok;
+    const b = bookings.find((x) => x.id === +(btn.dataset.ok || btn.dataset.ng));
+    b.status = ok ? "ok" : "ng";
+    store.set("bookings", bookings);
+    toast(ok ? `${b.who}の体験レッスンを確定しました` : `${b.who}の申し込みをお断りしました`);
+    renderReq();
+  }));
+}
+
+// ---- 講師：プロフィール ----
+const PFIELDS = { pArea: ["area", optsOf("area")], pStyle: ["style", STYLES], pLevel: ["level", optsOf("level")], pGoal: ["goal", optsOf("goal")], pTime: ["time", optsOf("time")] };
+for (const id in PFIELDS) fillSelect($("#" + id), PFIELDS[id][1]);
+
+function renderProf() {
+  const t = TEACHERS.find((x) => x.id === me);
+  for (const id in PFIELDS) $("#" + id).value = t[PFIELDS[id][0]];
+  $("#pBio").value = t.bio;
+  $("#pPrice").value = t.price;
+  $("#pPreview").innerHTML = cardHTML(t);
+}
+$("#pForm").onsubmit = (e) => {
+  e.preventDefault();
+  const t = TEACHERS.find((x) => x.id === me);
+  const price = Math.round(+$("#pPrice").value);
+  if (!$("#pBio").value.trim() || !(price >= 500 && price <= 20000)) { toast("紹介文と料金（500〜20,000円）を入れてください"); return; }
+  for (const id in PFIELDS) t[PFIELDS[id][0]] = $("#" + id).value;
+  t.bio = $("#pBio").value.trim();
+  t.price = price;
+  store.set("teachers", TEACHERS);
+  renderProf();
+  toast("プロフィールを保存しました");
+};
+
+let tId;
+function toast(msg) {
+  const el = $("#toast"); el.textContent = msg; el.classList.add("show");
+  clearTimeout(tId); tId = setTimeout(() => el.classList.remove("show"), 2200);
+}
+
+renderQuiz(); updateBadge();
+</script>
+</body>
+</html>
